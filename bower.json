@@ -1,0 +1,20 @@
+{
+  "name": "sheets-hotel-management",
+  "version": "0.0.0",
+  "homepage": "https://github.com/AlexeyMK/sheets-hotel-management",
+  "authors": [
+    "Jorge Romero <romeroqj@gmail.com>",
+    "Alexey Komissarouk <alexey86@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery-ui": "~1.11.1"
+  }
+}
