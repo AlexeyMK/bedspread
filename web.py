@@ -51,6 +51,10 @@ def hello_world():
 
   return render_template("calendar.html", **locals())
 
+@app.route('/search')
+def search():
+  return render_template('search.html')
+
 
 if __name__ == '__main__':
   app.run(debug=True)
