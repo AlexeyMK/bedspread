@@ -17,8 +17,8 @@ class BookingsDB(object):
     # { "double 2": [booking, booking, booking...]}
     print "Started loading DB..."
     self.bookings_by_room = defaultdict(list)
-    # { "double 2": [12/01/2014, 13/01/2014...]} (datetime objects)
-    self.dates_occupied_by_room = defaultdict(set)
+    # { "double 2": {"datetime":tentative...}} (datetime objects)
+    self.dates_occupied_by_room = defaultdict(dict)
     self.room_properties = {}
 
     self.gc = gspread.login('hackerparadise2014@gmail.com', 'hacker2014')
@@ -38,12 +38,13 @@ class BookingsDB(object):
   def _load_bookings(self):
     bookings = self.spreadsheet.worksheet("Bookings")
 
-    for room_id, name, checkin_date, checkout_date in bookings.get_all_values()[1:]:
+    for room_id, name, checkin_date, checkout_date, status in bookings.get_all_values()[1:]:
       self.bookings_by_room[room_id].append({
         "name": name,
         "checkin_date": datetime.strptime(checkin_date, DATE_FORMAT),
         "checkout_date": datetime.strptime(checkout_date, DATE_FORMAT),
-        "room_name": room_id
+        "room_name": room_id,
+        "status": status
       })
 
     for room_id, bookings in self.bookings_by_room.iteritems():
@@ -51,7 +52,7 @@ class BookingsDB(object):
         # TODO(AMK) error handling for double-booking
         for booked_date in daterange(booking["checkin_date"],
                                      booking["checkout_date"]):
-          self.dates_occupied_by_room[room_id].add(booked_date)
+          self.dates_occupied_by_room[room_id][booked_date] = booking["status"]
 
   def room_details(self, room_id):
     return self.room_properties[room_id]

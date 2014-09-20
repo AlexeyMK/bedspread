@@ -19,7 +19,7 @@
         <td> {{ room }} </td>
         {% for date in calendar_date_range %}
           {% if date in dates_occupied_by_room[room] %}
-	    <td class="occupied {{ date.strftime('%a') }}">
+	    <td class="{{ dates_occupied_by_room[room][date] }} {{ date.strftime('%a') }} ">
 	      <div />
 	    </td>
           {% else %}

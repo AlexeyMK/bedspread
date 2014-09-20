@@ -7,11 +7,11 @@ th > div, td > div {
    width: 35px;
 }
 
-.occupied {
+.deposit_paid {
   background-color: #bdc3c7;
 }
 
-.occupied.Mon {
+.deposit_paid.Mon {
   background: repeating-linear-gradient(
     45deg,
     #bdc3c7,
@@ -46,5 +46,19 @@ th > div, td > div {
     #f4d03f 5px,
     #f1e0a5 5px,
     #f1e0a5 10px
+  );
+}
+
+.mentor {
+  background-color: #59abe3;
+}
+
+.mentor.Mon {
+  background: repeating-linear-gradient(
+    45deg,
+    #59abe3,
+    #59abe3 5px,
+    #89c4f4 5px,
+    #89c4f4 10px
   );
 }
