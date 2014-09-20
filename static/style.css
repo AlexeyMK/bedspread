@@ -1,0 +1,16 @@
+body {
+     margin: 0;
+     padding: 0;
+}
+
+ table, th, td {
+     border: 1px solid black;
+ }
+
+.occupied {
+  background-color: #bdc3c7;
+}
+
+.available {
+  background-color: #87d37c;
+}

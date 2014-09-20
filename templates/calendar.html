@@ -1,10 +1,6 @@
 <html>
   <head>
-    <style>
-      table, th, td {
-        border: 1px solid black;
-      }
-    </style>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
   </head>
   <body>
     <table>
@@ -18,13 +14,11 @@
       <tr>
         <td> {{ room }} </td>
         {% for date in calendar_date_range %}
-          <td>
-            {% if date in dates_occupied_by_room[room] %}
-              Occupied
-            {% else %}
-              Free
-            {% endif %}
-          </td>
+          {% if date in dates_occupied_by_room[room] %}
+	    <td class="occupied"></td>
+          {% else %}
+	    <td class="available"></td>
+          {% endif %}
         {% endfor %}
       </tr>
       {% endfor %}
