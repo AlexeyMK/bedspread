@@ -19,7 +19,11 @@
         <td> {{ room }} </td>
         {% for date in calendar_date_range %}
           <td>
-            Occupied
+            {% if date in dates_occupied_by_room[room] %}
+              Occupied
+            {% else %}
+              Free
+            {% endif %}
           </td>
         {% endfor %}
       </tr>
