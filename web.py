@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_from_directory
 from datetime import datetime
 from dateutil.parser import parse
 
@@ -42,6 +42,10 @@ def search():
   else:
     return render_template('search.html')
 
+
+@app.route('/bower_components/<path:filename>')
+def custom_static(filename):
+    return send_from_directory('bower_components', filename)
 
 if __name__ == '__main__':
   app.run(debug=True)
