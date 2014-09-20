@@ -62,13 +62,13 @@ def room_available_during_range(room, start_date, end_date, dates_occupied_by_ro
              for date in daterange(start_date, end_date))
 
 
-@app.route('/search', methods=['GET', 'POST'])
+@app.route('/search')
 def search():
   dates_occupied_by_room = load_bookings()
   rooms = dates_occupied_by_room.keys()
-  if request.method == 'POST':
-    start_date = parse(request.form['start_date'])
-    end_date = parse(request.form['end_date'])
+  if 'start_date' in request.args:
+    start_date = parse(request.args['start_date'])
+    end_date = parse(request.args['end_date'])
     available_rooms = [room for room in rooms
       if room_available_during_range(room, start_date, end_date,
                                      dates_occupied_by_room)
