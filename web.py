@@ -23,13 +23,17 @@ def calendar():
 
 @app.route('/search')
 def search():
-  dates_occupied_by_room = bookings_db.dates_occupied_by_room
-  rooms = dates_occupied_by_room.keys()
   if 'start_date' in request.args:
     start_date = parse(request.args['start_date'])
     end_date = parse(request.args['end_date'])
     available_types = bookings_db.room_types_available(start_date, end_date)
-    return render_template('search_results.html', available_types=available_types)
+    return render_template('search_results.html',
+      available_types=available_types,
+      daterange_human = "{start} to {end}".format(
+        start=start_date.strftime("%b %d"),
+        end=end_date.strftime("%b %d")
+      )
+    )
   else:
     return render_template('search.html')
 
