@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from collections import defaultdict
 from datetime import datetime, timedelta
 
@@ -19,8 +19,7 @@ def daterange(start_date, end_date):
     yield start_date + timedelta(n)
 
 
-@app.route('/')
-def hello_world():
+def load_bookings():
   # Open a worksheet from spreadsheet with one shot
   wks = gc.open("Bookings").sheet1
   bookings_by_room = defaultdict(list)
@@ -42,19 +41,31 @@ def hello_world():
                                    booking["checkout_date"]):
         dates_occupied_by_room[room_id].add(booked_date)
 
+  return dates_occupied_by_room
+  
+
+@app.route('/')
+def calendar():
   # TODO(AMK) infer from calendar
   min_checkin_date = datetime(2014, 9, 1)
   max_checkin_date = datetime(2014, 12, 1)
-  calendar_date_range = list(daterange(min_checkin_date, max_checkin_date))
-
-  rooms = bookings_by_room.keys()
+  calendar_date_range = list(daterange(min_checkin_date, max_checkin_date))  
+  dates_occupied_by_room = load_bookings()
+  rooms = dates_occupied_by_room.keys()
 
   return render_template("calendar.html", **locals())
 
-@app.route('/search')
+@app.route('/search', methods=['GET', 'POST'])
 def search():
-  return render_template('search.html')
-
+  date = datetime(2014, 9, 14)
+  dates_occupied_by_room = load_bookings()
+  rooms = dates_occupied_by_room.keys()
+  if request.method == 'POST':
+    available_rooms = [room for room in rooms
+                 if date not in dates_occupied_by_room[room]]
+    return render_template('search_results.html', available_rooms=available_rooms)
+  else:
+    return render_template('search.html')
 
 if __name__ == '__main__':
   app.run(debug=True)
