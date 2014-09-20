@@ -36,7 +36,9 @@ def hello_world():
   # TODO(AMK) infer from calendar
   min_checkin_date = datetime(2014, 9, 1)
   max_checkin_date = datetime(2014, 12, 1)
-  calendar_date_range = daterange(min_checkin_date, max_checkin_date)
+  calendar_date_range = list(daterange(min_checkin_date, max_checkin_date))
+
+  rooms = bookings_by_room.keys()
 
   return render_template("calendar.html", **locals())
 

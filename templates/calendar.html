@@ -11,9 +11,19 @@
       <tr>
         <th>Room</th>
       {% for date in calendar_date_range %}
-        <th>{{ date }}</th>
+        <th>{{ date.strftime("%b %d") }}</th>
       {% endfor %}
       </tr>
+      {% for room in rooms %}
+      <tr>
+        <td> {{ room }} </td>
+        {% for date in calendar_date_range %}
+          <td>
+            Occupied
+          </td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
     </table>
   </body>
 </html
