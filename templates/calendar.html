@@ -18,10 +18,11 @@
       <tr>
         <td> {{ room }} </td>
         {% for date in calendar_date_range %}
-          {% if date in dates_occupied_by_room[room] %}
-	    <td class="{{ dates_occupied_by_room[room][date] }} {{ date.strftime('%a') }} ">
-	      <div />
-	    </td>
+          {% set booking = dates_occupied_by_room[room].get(date) %}
+          {% if booking %}
+            <td class="{{ booking['status'] }} {{ date.strftime('%a') }} ">
+              <div>{{ booking["name"] }}</div>
+            </td>
           {% else %}
 	    <td class="available {{ date.strftime('%a') }}">
 	      <div />

@@ -5,6 +5,18 @@ body {
 
 th > div, td > div {
    width: 35px;
+   overflow: hidden;
+}
+
+td > div {
+  font-size: 10px;
+  text-align: center;
+  opacity: 0;
+  -webkit-transition: opacity .2s ease .05s;
+}
+
+td:hover > div {
+  opacity: 1;
 }
 
 .deposit_paid {

@@ -17,7 +17,7 @@ class BookingsDB(object):
     # { "double 2": [booking, booking, booking...]}
     print "Started loading DB..."
     self.bookings_by_room = defaultdict(list)
-    # { "double 2": {"datetime":tentative...}} (datetime objects)
+    # { "double 2": {datetime(2014,09,12):{booking details}}}
     self.dates_occupied_by_room = defaultdict(dict)
     self.room_properties = {}
 
@@ -52,7 +52,7 @@ class BookingsDB(object):
         # TODO(AMK) error handling for double-booking
         for booked_date in daterange(booking["checkin_date"],
                                      booking["checkout_date"]):
-          self.dates_occupied_by_room[room_id][booked_date] = booking["status"]
+          self.dates_occupied_by_room[room_id][booked_date] = booking
 
   def room_details(self, room_id):
     return self.room_properties[room_id]
