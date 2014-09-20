@@ -13,18 +13,26 @@ def daterange(start_date, end_date):
 
 
 class BookingsDB(object):
-  def __init__(self):
+  def __init__(self, need_to_load=None):
+    if need_to_load == None:
+      need_to_load = ["bookings", "rooms"]
+    elif isinstance(need_to_load, basestring):
+      need_to_load = [need_to_load]
+
     # { "double 2": [booking, booking, booking...]}
     print "Started loading DB..."
-    self.bookings_by_room = defaultdict(list)
-    # { "double 2": {datetime(2014,09,12):{booking details}}}
-    self.dates_occupied_by_room = defaultdict(dict)
-
     self.gc = gspread.login('hackerparadise2014@gmail.com', 'hacker2014')
-    self.spreadsheet = self.gc.open("Bookings")
-    self._load_bookings()
-    self.room_properties = self._load_worksheet('Rooms')
-    self.category_properties = self._load_worksheet('Categories')
+    self.spreadsheet = self.gc.open("Hacker Paradise Booking System")
+
+    if "bookings" in need_to_load:
+      self.bookings_by_room = defaultdict(list)
+      # { "double 2": {datetime(2014,09,12):{booking details}}}
+      self.dates_occupied_by_room = defaultdict(dict)
+      self._load_bookings()
+
+    if "rooms" in need_to_load:
+      self.room_properties = self._load_worksheet('Rooms')
+      self.category_properties = self._load_worksheet('Categories')
     print "Finished loading DB"
 
   def _load_worksheet(self, wksht_name):
