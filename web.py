@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 from collections import defaultdict
 from datetime import datetime, timedelta
+from dateutil.parser import parse
 
 import gspread
 
@@ -57,12 +58,12 @@ def calendar():
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
-  date = datetime(2014, 9, 14)
   dates_occupied_by_room = load_bookings()
   rooms = dates_occupied_by_room.keys()
   if request.method == 'POST':
+    start_date = parse(request.form['start_date'])
     available_rooms = [room for room in rooms
-                 if date not in dates_occupied_by_room[room]]
+                 if start_date not in dates_occupied_by_room[room]]
     return render_template('search_results.html', available_rooms=available_rooms)
   else:
     return render_template('search.html')
