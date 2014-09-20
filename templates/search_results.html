@@ -1,5 +1,8 @@
 <ul>
-{% for available_room in available_rooms %}
-<li> {{ available_room['room_name'] }} ({{ available_room['category'] }})</li>
+
+{% for available_type in available_types %}
+  <li> A {{available_type}} is available.</li>
+{% else %}
+  Sorry, no rooms available for those dates.
 {% endfor %}
 </ul>

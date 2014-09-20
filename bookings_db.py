@@ -15,6 +15,7 @@ def daterange(start_date, end_date):
 class BookingsDB(object):
   def __init__(self):
     # { "double 2": [booking, booking, booking...]}
+    print "Started loading DB..."
     self.bookings_by_room = defaultdict(list)
     # { "double 2": [12/01/2014, 13/01/2014...]} (datetime objects)
     self.dates_occupied_by_room = defaultdict(set)
@@ -24,6 +25,7 @@ class BookingsDB(object):
     self.spreadsheet = self.gc.open("Bookings")
     self._load_bookings()
     self._load_rooms()
+    print "Finished loading DB"
 
   def _load_rooms(self):
     rooms = self.spreadsheet.worksheet("Rooms")
@@ -54,6 +56,13 @@ class BookingsDB(object):
   def room_details(self, room_id):
     return self.room_properties[room_id]
 
-  def room_available_during_range(self, room, start_date, end_date):
+  def room_types_available(self, start_date, end_date):
+    rooms = self.bookings_by_room.keys()
+    available_rooms = [room for room in rooms
+        if self.is_room_available(room, start_date, end_date)]
+    return set(self.room_details(room)['category'] \
+        for room in available_rooms)
+
+  def is_room_available(self, room, start_date, end_date):
     return all(date not in self.dates_occupied_by_room[room]
                for date in daterange(start_date, end_date))
