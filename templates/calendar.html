@@ -10,16 +10,10 @@
     <table>
       <tr>
         <th>Room</th>
-        <th>Name</th>
-      </tr>
-    {% for room, bookings in bookings_by_room.iteritems() %}
-      {% for booking in bookings %}
-        <tr>
-          <td> {{ booking.room_id }}</td>
-          <td>{{ booking.name }}</td>
-        </tr>
+      {% for date in calendar_date_range %}
+        <th>{{ date }}</th>
       {% endfor %}
-    {% endfor %}
+      </tr>
     </table>
   </body>
 </html
