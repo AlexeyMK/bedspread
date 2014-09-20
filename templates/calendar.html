@@ -7,7 +7,11 @@
       <tr>
         <th>Room</th>
       {% for date in calendar_date_range %}
-        <th>{{ date.strftime("%b %d") }}</th>
+        <th>
+	  <div>
+	    {{ date.strftime("%a %b %d") }}
+	  </div>
+	</th>
       {% endfor %}
       </tr>
       {% for room in rooms %}
@@ -15,9 +19,13 @@
         <td> {{ room }} </td>
         {% for date in calendar_date_range %}
           {% if date in dates_occupied_by_room[room] %}
-	    <td class="occupied"></td>
+	    <td class="occupied {{ date.strftime('%a') }}">
+	      <div />
+	    </td>
           {% else %}
-	    <td class="available"></td>
+	    <td class="available {{ date.strftime('%a') }}">
+	      <div />
+	    </td>
           {% endif %}
         {% endfor %}
       </tr>

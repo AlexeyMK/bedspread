@@ -3,14 +3,48 @@ body {
      padding: 0;
 }
 
- table, th, td {
-     border: 1px solid black;
- }
+th > div, td > div {
+   width: 35px;
+}
 
 .occupied {
   background-color: #bdc3c7;
 }
 
+.occupied.Mon {
+  background: repeating-linear-gradient(
+    45deg,
+    #bdc3c7,
+    #bdc3c7 5px,
+    #eeeeee 5px,
+    #eeeeee 10px
+  );
+}
+
 .available {
   background-color: #87d37c;
+}
+
+.available.Mon {
+  background: repeating-linear-gradient(
+    45deg,
+    #87d37c,
+    #87d37c 5px,
+    #c8f7c5 5px,
+    #c8f7c5 10px
+  );
+}
+
+.tentative {
+  background-color: #f4d03f;
+}
+
+.tentative.Mon {
+  background: repeating-linear-gradient(
+    45deg,
+    #f4d03f,
+    #f4d03f 5px,
+    #f1e0a5 5px,
+    #f1e0a5 10px
+  );
 }
