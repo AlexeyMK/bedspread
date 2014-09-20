@@ -12,7 +12,7 @@ app = Flask(__name__)
 def calendar():
   # TODO(AMK) infer from calendar
   bookings_db = BookingsDB(need_to_load="bookings")
-  min_checkin_date = datetime(2014, 9, 1)
+  min_checkin_date = datetime.today()
   max_checkin_date = datetime(2014, 12, 1)
   calendar_date_range = list(daterange(min_checkin_date, max_checkin_date))
   dates_occupied_by_room = bookings_db.dates_occupied_by_room
