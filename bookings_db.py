@@ -42,6 +42,9 @@ class BookingsDB(object):
                                      booking["checkout_date"]):
           self.dates_occupied_by_room[room_id].add(booked_date)
 
+  def room_details(self, room_id):
+    return dict(name=room_id, category="single")
+
   def room_available_during_range(self, room, start_date, end_date):
     return all(date not in self.dates_occupied_by_room[room]
                for date in daterange(start_date, end_date))

@@ -1,5 +1,5 @@
 <ul>
 {% for available_room in available_rooms %}
-  <li> {{ available_room }}</li>
+<li> {{ available_room['name'] }} ({{ available_room['category'] }})</li>
 {% endfor %}
 </ul>

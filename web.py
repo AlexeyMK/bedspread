@@ -28,7 +28,7 @@ def search():
   if 'start_date' in request.args:
     start_date = parse(request.args['start_date'])
     end_date = parse(request.args['end_date'])
-    available_rooms = [room for room in rooms
+    available_rooms = [bookings_db.room_details(room) for room in rooms
       if bookings_db.room_available_during_range(room, start_date, end_date)
     ]
 
