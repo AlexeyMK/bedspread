@@ -1,0 +1,25 @@
+<html>
+  <head>
+    <style>
+      table, th, td {
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <table>
+      <tr>
+        <th>Room</th>
+        <th>Name</th>
+      </tr>
+    {% for room, bookings in bookings_by_room.iteritems() %}
+      {% for booking in bookings %}
+        <tr>
+          <td> {{ booking.room_id }}</td>
+          <td>{{ booking.name }}</td>
+        </tr>
+      {% endfor %}
+    {% endfor %}
+    </table>
+  </body>
+</html
