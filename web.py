@@ -43,18 +43,24 @@ def load_bookings():
         dates_occupied_by_room[room_id].add(booked_date)
 
   return dates_occupied_by_room
-  
+
 
 @app.route('/')
 def calendar():
   # TODO(AMK) infer from calendar
   min_checkin_date = datetime(2014, 9, 1)
   max_checkin_date = datetime(2014, 12, 1)
-  calendar_date_range = list(daterange(min_checkin_date, max_checkin_date))  
+  calendar_date_range = list(daterange(min_checkin_date, max_checkin_date))
   dates_occupied_by_room = load_bookings()
   rooms = dates_occupied_by_room.keys()
 
   return render_template("calendar.html", **locals())
+
+
+def room_available_during_range(room, start_date, end_date, dates_occupied_by_room):
+  return all(date not in dates_occupied_by_room[room]
+             for date in daterange(start_date, end_date))
+
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
@@ -62,8 +68,12 @@ def search():
   rooms = dates_occupied_by_room.keys()
   if request.method == 'POST':
     start_date = parse(request.form['start_date'])
+    end_date = parse(request.form['end_date'])
     available_rooms = [room for room in rooms
-                 if start_date not in dates_occupied_by_room[room]]
+      if room_available_during_range(room, start_date, end_date,
+                                     dates_occupied_by_room)
+    ]
+
     return render_template('search_results.html', available_rooms=available_rooms)
   else:
     return render_template('search.html')
