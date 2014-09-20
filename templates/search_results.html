@@ -1,7 +1,11 @@
 <ul>
 
-{% for available_type in available_types %}
-  <li> A {{available_type}} is available.</li>
+{% for category_details in available_types %}
+<li>
+  A {{category_details['category']}} is available.
+  {{category_details['description']}}, and is available for
+  {{category_details['monthly_price']}} per month.
+</li>
 {% else %}
   Sorry, no rooms available for those dates.
 {% endfor %}

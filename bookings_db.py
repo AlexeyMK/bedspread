@@ -19,21 +19,23 @@ class BookingsDB(object):
     self.bookings_by_room = defaultdict(list)
     # { "double 2": {datetime(2014,09,12):{booking details}}}
     self.dates_occupied_by_room = defaultdict(dict)
-    self.room_properties = {}
 
     self.gc = gspread.login('hackerparadise2014@gmail.com', 'hacker2014')
     self.spreadsheet = self.gc.open("Bookings")
     self._load_bookings()
-    self._load_rooms()
+    self.room_properties = self._load_worksheet('Rooms')
+    self.category_properties = self._load_worksheet('Categories')
     print "Finished loading DB"
 
-  def _load_rooms(self):
-    rooms = self.spreadsheet.worksheet("Rooms")
-    room_cells = rooms.get_all_values()
-    room_property_names = room_cells[0]
-    for room_details_raw in room_cells[1:]:
-      self.room_properties[room_details_raw[0]] = \
-          dict(zip(room_property_names, room_details_raw))
+  def _load_worksheet(self, wksht_name):
+    wksht = self.spreadsheet.worksheet(wksht_name)
+    wksht_cells = wksht.get_all_values()
+    wksht_property_names = wksht_cells[0]
+    output_dict = {}
+    for wksht_details_raw in wksht_cells[1:]:
+      output_dict[wksht_details_raw[0]] = \
+        dict(zip(wksht_property_names, wksht_details_raw))
+    return output_dict
 
   def _load_bookings(self):
     bookings = self.spreadsheet.worksheet("Bookings")
@@ -54,15 +56,13 @@ class BookingsDB(object):
                                      booking["checkout_date"]):
           self.dates_occupied_by_room[room_id][booked_date] = booking
 
-  def room_details(self, room_id):
-    return self.room_properties[room_id]
-
   def room_types_available(self, start_date, end_date):
     rooms = self.bookings_by_room.keys()
     available_rooms = [room for room in rooms
         if self.is_room_available(room, start_date, end_date)]
-    return set(self.room_details(room)['category'] \
+    room_types_available = set(self.room_properties[room]['category'] \
         for room in available_rooms)
+    return [self.category_properties[rt] for rt in room_types_available]
 
   def is_room_available(self, room, start_date, end_date):
     return all(date not in self.dates_occupied_by_room[room]
