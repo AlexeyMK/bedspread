@@ -9,7 +9,7 @@ th > div, td > div {
    overflow: hidden;
 }
 
-td > div {
+td > div.availability-cell {
   font-size: 10px;
   text-align: center;
   opacity: 0;
@@ -32,6 +32,12 @@ td:hover > div {
     #eeeeee 5px,
     #eeeeee 10px
   );
+}
+
+.calendar-room {
+  width: 130px;
+  text-align:right;
+  padding-right: 5px;
 }
 
 .available {
