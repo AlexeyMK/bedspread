@@ -2,6 +2,7 @@ from collections import defaultdict
 from datetime import datetime, timedelta
 
 import gspread
+import os
 
 
 DATE_FORMAT = "%Y-%m-%d"
@@ -21,7 +22,7 @@ class BookingsDB(object):
 
     # { "double 2": [booking, booking, booking...]}
     print "Started loading DB..."
-    self.gc = gspread.login('hackerparadise2014@gmail.com', 'hacker2014')
+    self.gc = gspread.login('hackerparadise2014@gmail.com', os.environ["GOOGLE_PASS"])
     self.spreadsheet = self.gc.open("Hacker Paradise Booking System")
 
     if "bookings" in need_to_load:
