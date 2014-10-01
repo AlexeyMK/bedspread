@@ -71,12 +71,16 @@ class BookingsDB(object):
 
       self.all_bookings.sort(key=lambda b: b["checkin_date"])
 
-  def arrivals_this_week(self):
+
+  def upcoming_arrivals(self, days=1):
     # find everybody who is coming in the next seven days
     now = datetime.now()
     today = datetime(now.year, now.month, now.day)
-    this_week = list(daterange(today, today + timedelta(days=7)))
-    return [b for b in self.all_bookings if b["checkin_date"] in this_week]
+    day_range = list(daterange(today, today + timedelta(days=days)))
+    return [b for b in self.all_bookings if b["checkin_date"] in day_range]
+
+  def arrivals_this_week(self):
+    return self.upcoming_arrivals(days=7)
 
   def room_types_available(self, start_date, end_date):
     rooms = self.bookings_by_room.keys()

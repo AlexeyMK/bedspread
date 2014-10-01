@@ -37,7 +37,8 @@ def arrivals():
 @app.route('/arrivals.json')
 def arrivals_json():
   bookings_db = BookingsDB(need_to_load="bookings")
-  return jsonify(arrivals=bookings_db.arrivals_this_week())
+  return jsonify(arrivals=bookings_db.upcoming_arrivals(
+      days=int(request.args.get('days', 7))))
 
 
 @app.route('/search')
