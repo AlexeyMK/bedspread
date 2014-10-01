@@ -69,6 +69,8 @@ class BookingsDB(object):
                                      booking["checkout_date"]):
           self.dates_occupied_by_room[room_id][booked_date] = booking
 
+      self.all_bookings.sort(key=lambda b: b["checkin_date"])
+
   def arrivals_this_week(self):
     # find everybody who is coming in the next seven days
     now = datetime.now()

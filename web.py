@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, send_from_directory
+from flask import Flask, render_template, request, send_from_directory, jsonify
 from datetime import datetime
 from dateutil.parser import parse
 
@@ -32,6 +32,12 @@ def arrivals():
   return render_template("arrivals.html",
       arrivals=bookings_db.arrivals_this_week(),
       today_weekday=datetime.now().strftime("%A"))
+
+
+@app.route('/arrivals.json')
+def arrivals_json():
+  bookings_db = BookingsDB(need_to_load="bookings")
+  return jsonify(arrivals=bookings_db.arrivals_this_week())
 
 
 @app.route('/search')
