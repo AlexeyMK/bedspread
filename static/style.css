@@ -82,7 +82,15 @@ td:hover > div {
   );
 }
 
+#see-also {
+  margin-top: 50px;
+  margin-left: 20px;
+  float: left;
+}
+
 #table-key {
+  float: left;
+  width: 250px;
   max-width: 200px;
   margin-top: 50px;
   margin-left: 50px;

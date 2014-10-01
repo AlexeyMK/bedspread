@@ -10,9 +10,9 @@ app = Flask(__name__)
 
 @app.route('/')
 def calendar():
-  # TODO(AMK) infer from calendar
   bookings_db = BookingsDB(need_to_load="bookings")
   now = datetime.now()
+  # TODO(AMK) infer from calendar
   min_checkin_date = datetime(now.year, now.month, now.day)
   max_checkin_date = datetime(2014, 11, 29)
   calendar_date_range = list(daterange(min_checkin_date, max_checkin_date))
@@ -24,6 +24,14 @@ def calendar():
     dates_occupied_by_room=dates_occupied_by_room,
     rooms=rooms,
   )
+
+
+@app.route('/arrivals')
+def arrivals():
+  bookings_db = BookingsDB(need_to_load="bookings")
+  return render_template("arrivals.html",
+      arrivals=bookings_db.arrivals_this_week(),
+      today_weekday=datetime.now().strftime("%A"))
 
 
 @app.route('/search')

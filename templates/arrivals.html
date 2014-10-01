@@ -3,43 +3,12 @@
     <link rel="stylesheet" type="text/css" href="/static/style.css">
   </head>
   <body>
-    <table>
-      <tr>
-        <th>Room</th>
-      {% for date in calendar_date_range %}
-        <th>
-	  <div>
-	    {{ date.strftime("%a %b %d") }}
-	  </div>
-	</th>
-      {% endfor %}
-      </tr>
-      {% for room in rooms %}
-      <tr>
-        <td><div class="calendar-room">{{ room }}</div></td>
-        {% for date in calendar_date_range %}
-          {% set booking = dates_occupied_by_room[room].get(date) %}
-          {% if booking %}
-            <td class="{{ booking['status'] }} {{ date.strftime('%a') }} ">
-              <div class="availability-cell">{{ booking["name"] }}</div>
-            </td>
-          {% else %}
-	    <td class="available {{ date.strftime('%a') }}">
-	      <div />
-	    </td>
-          {% endif %}
-        {% endfor %}
-      </tr>
-      {% endfor %}
-    </table>
-    <div id="table-key">
-      <h4>Key</h4>
-      <ul>
-        <li class="available">Available</li>
-        <li class="deposit_paid">Occupied</li>
-        <li class="mentor">Mentor</li>
-        <li class="tentative">Tentative</li>
-      </ul>
-    <div>
+    <p>Today is {{ today_weekday }}. Arrivals in next 7 days:
+    <ul> {% for arrival in arrivals %}
+      <li> {{ arrival.name }} arrives on
+           {{ arrival.checkin_date.strftime("%A") }}
+      </li>
+
+    {% endfor %} </ul>
   </body>
-</html
+</html>
