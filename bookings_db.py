@@ -26,6 +26,7 @@ class BookingsDB(object):
     self.spreadsheet = self.gc.open("Hacker Paradise Booking System")
 
     if "bookings" in need_to_load:
+      self.all_bookings = []
       self.bookings_by_room = defaultdict(list)
       # { "double 2": {datetime(2014,09,12):{booking details}}}
       self.dates_occupied_by_room = defaultdict(dict)
@@ -50,13 +51,16 @@ class BookingsDB(object):
     bookings = self.spreadsheet.worksheet("Bookings")
 
     for room_id, name, checkin_date, checkout_date, status in bookings.get_all_values()[1:]:
-      self.bookings_by_room[room_id].append({
+      booking_dict = {
         "name": name,
         "checkin_date": datetime.strptime(checkin_date, DATE_FORMAT),
         "checkout_date": datetime.strptime(checkout_date, DATE_FORMAT),
         "room_name": room_id,
         "status": status
-      })
+      }
+
+      self.bookings_by_room[room_id].append(booking_dict)
+      self.all_bookings.append(booking_dict)
 
     for room_id, bookings in self.bookings_by_room.iteritems():
       for booking in bookings:
@@ -64,6 +68,13 @@ class BookingsDB(object):
         for booked_date in daterange(booking["checkin_date"],
                                      booking["checkout_date"]):
           self.dates_occupied_by_room[room_id][booked_date] = booking
+
+  def arrivals_this_week(self):
+    # find everybody who is coming in the next seven days
+    now = datetime.now()
+    today = datetime(now.year, now.month, now.day)
+    this_week = list(daterange(today, today + timedelta(days=7)))
+    return [b for b in self.all_bookings if b["checkin_date"] in this_week]
 
   def room_types_available(self, start_date, end_date):
     rooms = self.bookings_by_room.keys()
