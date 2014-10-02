@@ -1,16 +1,7 @@
 <html>
   <head>
-    <script src="/bower_components/jquery/dist/jquery.js"></script>
-    <script src="/bower_components/jquery-ui/jquery-ui.js"></script>
+    <link rel="stylesheet" href="/bower_components/pikaday/css/pikaday.css">
   </head>
-  <script>
-    $(function() {
-      $( "#start_date" ).datepicker();
-    });
-    $(function() {
-      $( "#end_date" ).datepicker();
-    });
-  </script>
   <body>
     <form action="/search" method="get">
       <label for="start_date">Start Date: </label>
@@ -19,5 +10,10 @@
       <input id="end_date" type="text" name="end_date">
       <button type="submit">Search</button>
     </form>
+    <script src="bower_components/pikaday/pikaday.js"></script>
+    <script>
+      new Pikaday({ field: document.getElementById('start_date') });
+      new Pikaday({ field: document.getElementById('end_date') });
+    </script>
   </body>
 </html>
