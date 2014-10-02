@@ -12,8 +12,17 @@
     </form>
     <script src="bower_components/pikaday/pikaday.js"></script>
     <script>
-      new Pikaday({ field: document.getElementById('start_date') });
-      new Pikaday({ field: document.getElementById('end_date') });
+      new Pikaday({ field: document.getElementById('start_date'),
+        onSelect: function(startDate) {
+          var endDate = pikaEndDate.getDate();
+          if (endDate == null || endDate <= startDate) {
+            endDate = new Date(startDate.getTime());
+            endDate.setDate(startDate.getDate() + 7);
+            pikaEndDate.setDate(endDate);
+          }
+        }
+      });
+      var pikaEndDate = new Pikaday({ field: document.getElementById('end_date') });
     </script>
   </body>
 </html>
