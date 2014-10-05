@@ -6,7 +6,11 @@ body {
 
 th > div, td > div {
    width: 35px;
+   height: 35px;
    overflow: hidden;
+   display: flex;
+   align-items: center;
+   justify-content: center;
 }
 
 td > div.availability-cell {
