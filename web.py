@@ -10,13 +10,13 @@ app = Flask(__name__)
 
 @app.route('/')
 def calendar():
-  bookings_db = BookingsDB(need_to_load="bookings")
+  bookings_db = BookingsDB()
   now = datetime.now()
   # TODO(AMK) infer from calendar
   min_checkin_date = datetime(now.year, now.month, now.day)
   max_checkin_date = datetime(2014, 11, 29)
   calendar_date_range = list(daterange(min_checkin_date, max_checkin_date))
-  dates_occupied_by_room = bookings_db.dates_occupied_by_room
+  dates_occupied_by_room = bookings_db.dates_by_room()
   rooms = sorted(dates_occupied_by_room.keys())
 
   return render_template("calendar.html",

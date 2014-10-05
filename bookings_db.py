@@ -71,6 +71,11 @@ class BookingsDB(object):
 
       self.all_bookings.sort(key=lambda b: b["checkin_date"])
 
+  def dates_by_room(self):
+    # basically dates_occupied_by_room, but include rooms
+    # that are 100% not booked
+    return dict((room_id, self.dates_occupied_by_room.get(room_id, dict()))
+                 for room_id in self.room_properties.keys())
 
   def upcoming_arrivals(self, days=1):
     # find everybody who is coming in the next seven days

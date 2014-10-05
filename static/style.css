@@ -68,6 +68,20 @@ td:hover > div {
   );
 }
 
+.staff {
+  background-color: #9B59B6;
+}
+
+.staff.Mon {
+  background: repeating-linear-gradient(
+    45deg,
+    #9B59B6,
+    #9B59B6 5px,
+    #BE90D4 5px,
+    #BE90D4 10px
+  );
+}
+
 .mentor {
   background-color: #59abe3;
 }
