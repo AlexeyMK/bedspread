@@ -8,10 +8,10 @@
         <th>Room</th>
       {% for date in calendar_date_range %}
         <th>
-	  <div>
-	    {{ date.strftime("%a %b %d") }}
-	  </div>
-	</th>
+          <div>
+            {{ date.strftime("%d %a %b") }}
+          </div>
+        </th>
       {% endfor %}
       </tr>
       {% for room in rooms %}

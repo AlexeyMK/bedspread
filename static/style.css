@@ -4,9 +4,14 @@ body {
      font-family: "Helvetica"
 }
 
+td > div {
+   height: 35px;
+}
+th > div {
+   height: 70px;
+}
 th > div, td > div {
    width: 35px;
-   height: 35px;
    overflow: hidden;
    display: flex;
    align-items: center;
