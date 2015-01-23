@@ -8,6 +8,14 @@ from bookings_db import daterange, BookingsDB
 app = Flask(__name__)
 
 
+@app.route('/bookings-dashboard')
+def bookings_dashboard():
+  return render_template("bookings-dashboard.html",
+    hotel_capacity=BookingsDB(need_to_load=[]).hotel_capacity(),
+    ROOM_TYPES=['single', 'shared', 'suite']
+  )
+
+
 @app.route('/')
 def calendar():
   bookings_db = BookingsDB()

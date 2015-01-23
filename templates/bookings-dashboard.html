@@ -1,0 +1,34 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+  </head>
+  <body>
+    <table border=1>
+      <thead>
+        <tr>
+          <th>Hotel Name</th>
+          <th>Arrival Date</th>
+          {# TODO(AMK): color red/green/yellow if we've booked too few or too many #}
+          {% for room_type in ROOM_TYPES %}
+            <th>Min {{room_types}}</th>
+            <th>Max {{room_types}}</th>
+            <th>Booked {{room_types}}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for hotel_name, hotel in hotel_capacity.iteritems() %}
+          <tr>
+            <td>{{ hotel_name }}</td>
+            <td>{{ hotel.date_start.strftime("%b %d") }}</td>
+            {% for room_type in ROOM_TYPES %}
+              <td>{{ hotel.capacity[room_type][0] }}</td>
+              <td>{{ hotel.capacity[room_type][1] }}</td>
+              <td>?</td>
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
+</html

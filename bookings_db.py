@@ -21,9 +21,10 @@ class BookingsDB(object):
       need_to_load = [need_to_load]
 
     # { "double 2": [booking, booking, booking...]}
-    print "Started loading DB..."
-    self.gc = gspread.login('hackerparadise2014@gmail.com', os.environ["GOOGLE_PASS"])
-    self.spreadsheet = self.gc.open("Hacker Paradise Booking System")
+    if need_to_load != []:
+      print "Started loading DB..."
+      self.gc = gspread.login('hackerparadise2014@gmail.com', os.environ["GOOGLE_PASS"])
+      self.spreadsheet = self.gc.open("Hacker Paradise Booking System")
 
     if "bookings" in need_to_load:
       self.all_bookings = []
@@ -70,6 +71,18 @@ class BookingsDB(object):
           self.dates_occupied_by_room[room_id][booked_date] = booking
 
       self.all_bookings.sort(key=lambda b: b["checkin_date"])
+
+
+  def hotel_capacity(self):
+    # hotel_name: {date_start, num_weeks, capacity: {singles: [min, max], ...}}
+    return {"Grand Mango Hotel": dict(
+      date_start=datetime(2014,2,15),
+      capacity=dict(
+        single=[10,15],
+        shared=[8,16],
+        suite=[0,20]
+      )
+    )}
 
   def dates_by_room(self):
     # basically dates_occupied_by_room, but include rooms
