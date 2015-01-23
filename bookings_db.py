@@ -21,10 +21,9 @@ class BookingsDB(object):
       need_to_load = [need_to_load]
 
     # { "double 2": [booking, booking, booking...]}
-    if need_to_load != []:
-      print "Started loading DB..."
-      self.gc = gspread.login('hackerparadise2014@gmail.com', os.environ["GOOGLE_PASS"])
-      self.spreadsheet = self.gc.open("Hacker Paradise Booking System")
+    print "Started loading DB..."
+    self.gc = gspread.login('hackerparadise2014@gmail.com', os.environ["GOOGLE_PASS"])
+    self.spreadsheet = self.gc.open("Hacker Paradise Booking System")
 
     if "bookings" in need_to_load:
       self.all_bookings = []
@@ -38,8 +37,9 @@ class BookingsDB(object):
       self.category_properties = self._load_worksheet('Categories')
     print "Finished loading DB"
 
-  def _load_worksheet(self, wksht_name):
-    wksht = self.spreadsheet.worksheet(wksht_name)
+  def _load_worksheet(self, wksht_name, spreadsheet="Hacker Paradise Booking System"):
+    sheet = self.gc.open(spreadsheet)
+    wksht = sheet.worksheet(wksht_name)
     wksht_cells = wksht.get_all_values()
     wksht_property_names = wksht_cells[0]
     output_dict = {}
@@ -74,15 +74,20 @@ class BookingsDB(object):
 
 
   def hotel_capacity(self):
-    # hotel_name: {date_start, num_weeks, capacity: {singles: [min, max], ...}}
-    return {"Grand Mango Hotel": dict(
-      date_start=datetime(2014,2,15),
-      capacity=dict(
-        single=[10,15],
-        shared=[8,16],
-        suite=[0,20]
+    capacity_wksht = self._load_worksheet("Sheet1", spreadsheet="HP SE Asia 2015 Hotel Availability")
+    capacities = {}
+    for name, hotel in capacity_wksht.iteritems():
+      intf = lambda field_name: int(hotel[field_name])
+      capacities[name] = dict(
+        date_start=datetime.strptime(hotel["Start Date"], DATE_FORMAT),
+        capacity=dict(
+          single=(intf("Min Single"), intf("Max Single")),
+          shared=(intf("Min Shared"), intf("Max Shared")),
+          suite=(intf("Min Suite"), intf("Max Suite"))
+        )
       )
-    )}
+
+    return capacities
 
   def dates_by_room(self):
     # basically dates_occupied_by_room, but include rooms
