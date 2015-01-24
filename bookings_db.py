@@ -1,4 +1,4 @@
-from collections import defaultdict
+from collections import defaultdict, Counter
 from datetime import datetime, timedelta
 
 import gspread
@@ -6,11 +6,17 @@ import os
 
 
 DATE_FORMAT = "%Y-%m-%d"
+ROOM_TYPES = ['single', 'shared', 'suite']
 
 
 def daterange(start_date, end_date):
   for n in range(int((end_date - start_date).days)):
     yield start_date + timedelta(n)
+
+
+def weekrange(start_date, num_weeks):
+  for weeks_ahead in xrange(num_weeks):
+    yield start_date + timedelta(weeks=weeks_ahead)
 
 
 class BookingsDB(object):
@@ -72,6 +78,19 @@ class BookingsDB(object):
 
       self.all_bookings.sort(key=lambda b: b["checkin_date"])
 
+  def capacity_by_week(self):
+    # { datetime(2/15): { single: {min: 4, max: 6} } }
+    capacity_by_week_by_room_type = defaultdict(defaultdict(Counter()))
+
+    for name, hotel in self.hotel_capacity():
+      for start_date in weekrange(hotel["date_start"], hotel["num weeks"]):
+        for room_type in ROOM_TYPES:
+          capacity_by_week_by_room_type[start_date][room_type]["min"] += \
+            hotel["capacity"][room_type][0]
+          capacity_by_week_by_room_type[start_date][room_type]["max"] += \
+            hotel["capacity"][room_type][1]
+
+    return capacity_by_week_by_room_type
 
   def hotel_capacity(self):
     capacity_wksht = self._load_worksheet("Sheet1", spreadsheet="HP SE Asia 2015 Hotel Availability")
@@ -80,6 +99,7 @@ class BookingsDB(object):
       intf = lambda field_name: int(hotel[field_name])
       capacities[name] = dict(
         date_start=datetime.strptime(hotel["Start Date"], DATE_FORMAT),
+        num_weeks=intf("# Weeks"),
         capacity=dict(
           single=(intf("Min Single"), intf("Max Single")),
           shared=(intf("Min Shared"), intf("Max Shared")),
@@ -88,6 +108,25 @@ class BookingsDB(object):
       )
 
     return capacities
+
+
+  def se_asia_bookings_by_week(self):
+    # {email:  {"Start Date", "Room Type", "# Weeks"}
+    confirmations_by_user = self._load_worksheet("Form Responses 1",
+      spreadsheet="Deposit Confirmation - Hacker Paradise Spring 2015 SE Asia   (Responses)")
+
+    # {datetime(2/15/2015): {"Single": set("jon@jon.com", ...)}}
+    bookings_by_week_by_type = defaultdict(defaultdict(set))
+
+    for email, confirmation in confirmations_by_user:
+      if "@" in email: # real users only, we have a bunch of meta-rows
+        # TODO move date to nearest saturday before the date.
+        for date in weekrange(confirmation["Start Date"],
+                              int(confirmation["# Weeks"])):
+          bookings_by_week_by_type[date][confirmation["Room Type"]].add(email)
+
+    return bookings_by_week_by_type
+
 
   def dates_by_room(self):
     # basically dates_occupied_by_room, but include rooms

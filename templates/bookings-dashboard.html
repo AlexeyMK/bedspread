@@ -6,25 +6,24 @@
     <table border=1>
       <thead>
         <tr>
-          <th>Hotel Name</th>
-          <th>Arrival Date</th>
+          <th>Week Start</th>
           {# TODO(AMK): color red/green/yellow if we've booked too few or too many #}
           {% for room_type in ROOM_TYPES %}
             <th>Min {{room_types}}</th>
             <th>Max {{room_types}}</th>
             <th>Booked {{room_types}}</th>
           {% endfor %}
+          <th> Hotels </th>
         </tr>
       </thead>
       <tbody>
-        {% for hotel_name, hotel in hotel_capacity.iteritems() %}
+        {% for start_date, week in weekly_status %}
           <tr>
-            <td>{{ hotel_name }}</td>
-            <td>{{ hotel.date_start.strftime("%b %d") }}</td>
+            <td>{{ start_date.strftime("%b %d") }}</td>
             {% for room_type in ROOM_TYPES %}
-              <td>{{ hotel.capacity[room_type][0] }}</td>
-              <td>{{ hotel.capacity[room_type][1] }}</td>
-              <td>?</td>
+              <td>{{ week.capacity[room_type].min }}</td>
+              <td>{{ week.capacity[room_type].max }}</td>
+              <td>{{ week.booked[room_type] | count }} </td>
             {% endfor %}
           </tr>
         {% endfor %}

@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, send_from_directory, jsonify
 from datetime import datetime
 from dateutil.parser import parse
 
-from bookings_db import daterange, BookingsDB
+from bookings_db import daterange, BookingsDB, ROOM_TYPES
 
 
 app = Flask(__name__)
@@ -10,9 +10,17 @@ app = Flask(__name__)
 
 @app.route('/bookings-dashboard')
 def bookings_dashboard():
+  backend = BookingsDB(need_to_load=[])
+  capacity = backend.capacity_by_week()
+  bookings = backend.se_asia_bookings_by_week()
+
+  weekly_status = dict((week,
+    dict(capacity=capacity[week], booked=bookings[week])
+  ) for week in bookings.keys())
+
   return render_template("bookings-dashboard.html",
-    hotel_capacity=BookingsDB(need_to_load=[]).hotel_capacity(),
-    ROOM_TYPES=['single', 'shared', 'suite']
+    weekly_status=weekly_status,
+    ROOM_TYPES=ROOM_TYPES
   )
 
 
