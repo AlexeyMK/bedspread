@@ -15,6 +15,8 @@ def daterange(start_date, end_date):
 
 
 def weekrange(start_date, num_weeks):
+  SATURDAY = 5
+  while start_date.weekday() != SATURDAY: start_date -= timedelta(days=1)
   for weeks_ahead in xrange(num_weeks):
     yield start_date + timedelta(weeks=weeks_ahead)
 
@@ -80,10 +82,10 @@ class BookingsDB(object):
 
   def capacity_by_week(self):
     # { datetime(2/15): { single: {min: 4, max: 6} } }
-    capacity_by_week_by_room_type = defaultdict(defaultdict(Counter()))
+    capacity_by_week_by_room_type = defaultdict(lambda: defaultdict(Counter))
 
-    for name, hotel in self.hotel_capacity():
-      for start_date in weekrange(hotel["date_start"], hotel["num weeks"]):
+    for name, hotel in self.hotel_capacity().iteritems():
+      for start_date in weekrange(hotel["date_start"], hotel["num_weeks"]):
         for room_type in ROOM_TYPES:
           capacity_by_week_by_room_type[start_date][room_type]["min"] += \
             hotel["capacity"][room_type][0]
@@ -116,14 +118,15 @@ class BookingsDB(object):
       spreadsheet="Deposit Confirmation - Hacker Paradise Spring 2015 SE Asia   (Responses)")
 
     # {datetime(2/15/2015): {"Single": set("jon@jon.com", ...)}}
-    bookings_by_week_by_type = defaultdict(defaultdict(set))
+    bookings_by_week_by_type = defaultdict(lambda: defaultdict(set))
 
-    for email, confirmation in confirmations_by_user:
+    for email, confirmation in confirmations_by_user.iteritems():
       if "@" in email: # real users only, we have a bunch of meta-rows
         # TODO move date to nearest saturday before the date.
-        for date in weekrange(confirmation["Start Date"],
+        for date in weekrange(datetime.strptime(
+                      confirmation["Start Date"], "%m/%d").replace(year=2015),
                               int(confirmation["# Weeks"])):
-          bookings_by_week_by_type[date][confirmation["Room Type"]].add(email)
+          bookings_by_week_by_type[date][confirmation["Room Type"].lower()].add(email)
 
     return bookings_by_week_by_type
 

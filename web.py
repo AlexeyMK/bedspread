@@ -14,10 +14,9 @@ def bookings_dashboard():
   capacity = backend.capacity_by_week()
   bookings = backend.se_asia_bookings_by_week()
 
-  weekly_status = dict((week,
+  weekly_status = sorted([(week,
     dict(capacity=capacity[week], booked=bookings[week])
-  ) for week in bookings.keys())
-
+  ) for week in bookings.keys()])
   return render_template("bookings-dashboard.html",
     weekly_status=weekly_status,
     ROOM_TYPES=ROOM_TYPES
