@@ -50,10 +50,10 @@ class BookingsDB(object):
     wksht = sheet.worksheet(wksht_name)
     wksht_cells = wksht.get_all_values()
     wksht_property_names = wksht_cells[0]
-    output_dict = {}
+    output_dict = defaultdict(list)
     for wksht_details_raw in wksht_cells[1:]:
-      output_dict[wksht_details_raw[0]] = \
-        dict(zip(wksht_property_names, wksht_details_raw))
+      output_dict[wksht_details_raw[0]].append(
+        dict(zip(wksht_property_names, wksht_details_raw)))
     return output_dict
 
   def _load_bookings(self):
@@ -97,36 +97,38 @@ class BookingsDB(object):
   def hotel_capacity(self):
     capacity_wksht = self._load_worksheet("Sheet1", spreadsheet="HP SE Asia 2015 Hotel Availability")
     capacities = {}
-    for name, hotel in capacity_wksht.iteritems():
-      intf = lambda field_name: int(hotel[field_name])
-      capacities[name] = dict(
-        date_start=datetime.strptime(hotel["Start Date"], DATE_FORMAT),
-        num_weeks=intf("# Weeks"),
-        capacity=dict(
-          single=(intf("Min Single"), intf("Max Single")),
-          shared=(intf("Min Shared"), intf("Max Shared")),
-          suite=(intf("Min Suite"), intf("Max Suite"))
+    for name, hotels in capacity_wksht.iteritems():
+      for hotel in hotels:
+        intf = lambda field_name: int(hotel[field_name])
+        capacities[name] = dict(
+          date_start=datetime.strptime(hotel["Start Date"], DATE_FORMAT),
+          num_weeks=intf("# Weeks"),
+          capacity=dict(
+            single=(intf("Min Single"), intf("Max Single")),
+            shared=(intf("Min Shared"), intf("Max Shared")),
+            suite=(intf("Min Suite"), intf("Max Suite"))
+          )
         )
-      )
 
     return capacities
 
 
   def se_asia_bookings_by_week(self):
-    # {email:  {"Start Date", "Room Type", "# Weeks"}
+    # {email:  [{"Start Date", "Room Type", "# Weeks"}]
     confirmations_by_user = self._load_worksheet("Form Responses 1",
       spreadsheet="Deposit Confirmation - Hacker Paradise Spring 2015 SE Asia   (Responses)")
 
     # {datetime(2/15/2015): {"Single": set("jon@jon.com", ...)}}
     bookings_by_week_by_type = defaultdict(lambda: defaultdict(set))
 
-    for email, confirmation in confirmations_by_user.iteritems():
-      if "@" in email: # real users only, we have a bunch of meta-rows
-        # TODO move date to nearest saturday before the date.
-        for date in weekrange(datetime.strptime(
-                      confirmation["Start Date"], "%m/%d").replace(year=2015),
-                              int(confirmation["# Weeks"])):
-          bookings_by_week_by_type[date][confirmation["Room Type"].lower()].add(email)
+    for email, confirmations in confirmations_by_user.iteritems():
+      for confirmation in confirmations:
+        if "@" in email: # real users only, we have a bunch of meta-rows
+          # TODO move date to nearest saturday before the date.
+          for date in weekrange(datetime.strptime(
+                        confirmation["Start Date"], "%m/%d").replace(year=2015),
+                                int(confirmation["# Weeks"])):
+            bookings_by_week_by_type[date][confirmation["Room Type"].lower()].add(email)
 
     return bookings_by_week_by_type
 
